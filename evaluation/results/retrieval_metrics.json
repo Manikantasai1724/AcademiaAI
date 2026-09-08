@@ -1,0 +1,378 @@
+{
+  "total_queries": 6,
+  "total_corpus_chunks": 9,
+  "mean_metrics": {
+    "precision@1": 0.8333,
+    "precision@3": 0.3889,
+    "precision@5": 0.3,
+    "recall@1": 0.5556,
+    "recall@3": 0.6944,
+    "recall@5": 0.8333,
+    "hit_rate@1": 0.8333,
+    "hit_rate@3": 0.8333,
+    "hit_rate@5": 0.8333,
+    "mrr": 0.8333
+  },
+  "detailed_queries": [
+    {
+      "id": "q01",
+      "type": "definition",
+      "question": "What is backpropagation in deep learning?",
+      "target_doc": "deep_learning.pdf",
+      "retrieved_ranks": [
+        {
+          "rank": 1,
+          "chunk_id": "doc_cd1aeeeaf2df87f9_p1_c001",
+          "filename": "deep_learning.pdf",
+          "page": 1,
+          "score": 0.8175,
+          "is_relevant": true
+        },
+        {
+          "rank": 2,
+          "chunk_id": "doc_7b978cc5a1a36179_p1_c002",
+          "filename": "loss_optimization.txt",
+          "page": 1,
+          "score": 0.5976,
+          "is_relevant": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "doc_7b978cc5a1a36179_p1_c003",
+          "filename": "loss_optimization.txt",
+          "page": 1,
+          "score": 0.385,
+          "is_relevant": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "doc_7b978cc5a1a36179_p1_c001",
+          "filename": "loss_optimization.txt",
+          "page": 1,
+          "score": 0.3351,
+          "is_relevant": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "doc_f66811be1794dd0e_p1_c002",
+          "filename": "transformer_nlp.docx",
+          "page": 1,
+          "score": 0.322,
+          "is_relevant": false
+        }
+      ],
+      "metrics": {
+        "precision@1": 1.0,
+        "recall@1": 1.0,
+        "hit_rate@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "recall@3": 1.0,
+        "hit_rate@3": 1.0,
+        "precision@5": 0.2,
+        "recall@5": 1.0,
+        "hit_rate@5": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "id": "q02",
+      "type": "factual",
+      "question": "Who introduced the Transformer architecture in 2017?",
+      "target_doc": "transformer_nlp.docx",
+      "retrieved_ranks": [
+        {
+          "rank": 1,
+          "chunk_id": "doc_f66811be1794dd0e_p1_c001",
+          "filename": "transformer_nlp.docx",
+          "page": 1,
+          "score": 0.4585,
+          "is_relevant": true
+        },
+        {
+          "rank": 2,
+          "chunk_id": "doc_d8434a061110daf0_p1_c001",
+          "filename": "information_retrieval.pptx",
+          "page": 1,
+          "score": 0.128,
+          "is_relevant": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "doc_d8434a061110daf0_p1_c002",
+          "filename": "information_retrieval.pptx",
+          "page": 1,
+          "score": 0.1178,
+          "is_relevant": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "doc_cd1aeeeaf2df87f9_p1_c001",
+          "filename": "deep_learning.pdf",
+          "page": 1,
+          "score": 0.0985,
+          "is_relevant": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "doc_f66811be1794dd0e_p1_c002",
+          "filename": "transformer_nlp.docx",
+          "page": 1,
+          "score": 0.0829,
+          "is_relevant": true
+        }
+      ],
+      "metrics": {
+        "precision@1": 1.0,
+        "recall@1": 0.5,
+        "hit_rate@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "recall@3": 0.5,
+        "hit_rate@3": 1.0,
+        "precision@5": 0.4,
+        "recall@5": 1.0,
+        "hit_rate@5": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "id": "q03",
+      "type": "explanation",
+      "question": "Why does self-attention scale dot products by the square root of the key dimension?",
+      "target_doc": "transformer_nlp.docx",
+      "retrieved_ranks": [
+        {
+          "rank": 1,
+          "chunk_id": "doc_f66811be1794dd0e_p1_c002",
+          "filename": "transformer_nlp.docx",
+          "page": 1,
+          "score": 0.7054,
+          "is_relevant": false
+        },
+        {
+          "rank": 2,
+          "chunk_id": "doc_d8434a061110daf0_p2_c001",
+          "filename": "information_retrieval.pptx",
+          "page": 2,
+          "score": 0.4084,
+          "is_relevant": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "doc_f66811be1794dd0e_p1_c001",
+          "filename": "transformer_nlp.docx",
+          "page": 1,
+          "score": 0.2818,
+          "is_relevant": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "doc_d8434a061110daf0_p1_c002",
+          "filename": "information_retrieval.pptx",
+          "page": 1,
+          "score": 0.2516,
+          "is_relevant": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "doc_7b978cc5a1a36179_p1_c001",
+          "filename": "loss_optimization.txt",
+          "page": 1,
+          "score": 0.2231,
+          "is_relevant": false
+        }
+      ],
+      "metrics": {
+        "precision@1": 0.0,
+        "recall@1": 0.0,
+        "hit_rate@1": 0.0,
+        "precision@3": 0.0,
+        "recall@3": 0.0,
+        "hit_rate@3": 0.0,
+        "precision@5": 0.0,
+        "recall@5": 0.0,
+        "hit_rate@5": 0.0,
+        "mrr": 0.0
+      }
+    },
+    {
+      "id": "q04",
+      "type": "comparison",
+      "question": "How does dense semantic retrieval differ from sparse keyword search?",
+      "target_doc": "information_retrieval.pptx",
+      "retrieved_ranks": [
+        {
+          "rank": 1,
+          "chunk_id": "doc_d8434a061110daf0_p1_c001",
+          "filename": "information_retrieval.pptx",
+          "page": 1,
+          "score": 0.7416,
+          "is_relevant": true
+        },
+        {
+          "rank": 2,
+          "chunk_id": "doc_d8434a061110daf0_p1_c002",
+          "filename": "information_retrieval.pptx",
+          "page": 1,
+          "score": 0.3582,
+          "is_relevant": true
+        },
+        {
+          "rank": 3,
+          "chunk_id": "doc_f66811be1794dd0e_p1_c002",
+          "filename": "transformer_nlp.docx",
+          "page": 1,
+          "score": 0.2431,
+          "is_relevant": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "doc_d8434a061110daf0_p2_c001",
+          "filename": "information_retrieval.pptx",
+          "page": 2,
+          "score": 0.2243,
+          "is_relevant": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "doc_7b978cc5a1a36179_p1_c001",
+          "filename": "loss_optimization.txt",
+          "page": 1,
+          "score": 0.1546,
+          "is_relevant": false
+        }
+      ],
+      "metrics": {
+        "precision@1": 1.0,
+        "recall@1": 0.5,
+        "hit_rate@1": 1.0,
+        "precision@3": 0.6666666666666666,
+        "recall@3": 1.0,
+        "hit_rate@3": 1.0,
+        "precision@5": 0.4,
+        "recall@5": 1.0,
+        "hit_rate@5": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "id": "q05",
+      "type": "process",
+      "question": "What are the computational steps involved in Stochastic Gradient Descent weight updates?",
+      "target_doc": "loss_optimization.txt",
+      "retrieved_ranks": [
+        {
+          "rank": 1,
+          "chunk_id": "doc_7b978cc5a1a36179_p1_c002",
+          "filename": "loss_optimization.txt",
+          "page": 1,
+          "score": 0.7879,
+          "is_relevant": true
+        },
+        {
+          "rank": 2,
+          "chunk_id": "doc_cd1aeeeaf2df87f9_p1_c001",
+          "filename": "deep_learning.pdf",
+          "page": 1,
+          "score": 0.5102,
+          "is_relevant": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "doc_7b978cc5a1a36179_p1_c003",
+          "filename": "loss_optimization.txt",
+          "page": 1,
+          "score": 0.4988,
+          "is_relevant": true
+        },
+        {
+          "rank": 4,
+          "chunk_id": "doc_7b978cc5a1a36179_p1_c001",
+          "filename": "loss_optimization.txt",
+          "page": 1,
+          "score": 0.4739,
+          "is_relevant": true
+        },
+        {
+          "rank": 5,
+          "chunk_id": "doc_f66811be1794dd0e_p1_c002",
+          "filename": "transformer_nlp.docx",
+          "page": 1,
+          "score": 0.2506,
+          "is_relevant": false
+        }
+      ],
+      "metrics": {
+        "precision@1": 1.0,
+        "recall@1": 0.3333333333333333,
+        "hit_rate@1": 1.0,
+        "precision@3": 0.6666666666666666,
+        "recall@3": 0.6666666666666666,
+        "hit_rate@3": 1.0,
+        "precision@5": 0.6,
+        "recall@5": 1.0,
+        "hit_rate@5": 1.0,
+        "mrr": 1.0
+      }
+    },
+    {
+      "id": "q06",
+      "type": "conceptual",
+      "question": "Why is cosine similarity equivalent to the dot product for L2-normalized vectors?",
+      "target_doc": "information_retrieval.pptx",
+      "retrieved_ranks": [
+        {
+          "rank": 1,
+          "chunk_id": "doc_d8434a061110daf0_p2_c001",
+          "filename": "information_retrieval.pptx",
+          "page": 2,
+          "score": 0.7484,
+          "is_relevant": true
+        },
+        {
+          "rank": 2,
+          "chunk_id": "doc_f66811be1794dd0e_p1_c002",
+          "filename": "transformer_nlp.docx",
+          "page": 1,
+          "score": 0.3827,
+          "is_relevant": false
+        },
+        {
+          "rank": 3,
+          "chunk_id": "doc_d8434a061110daf0_p1_c002",
+          "filename": "information_retrieval.pptx",
+          "page": 1,
+          "score": 0.2779,
+          "is_relevant": false
+        },
+        {
+          "rank": 4,
+          "chunk_id": "doc_d8434a061110daf0_p1_c001",
+          "filename": "information_retrieval.pptx",
+          "page": 1,
+          "score": 0.1686,
+          "is_relevant": false
+        },
+        {
+          "rank": 5,
+          "chunk_id": "doc_7b978cc5a1a36179_p1_c001",
+          "filename": "loss_optimization.txt",
+          "page": 1,
+          "score": 0.112,
+          "is_relevant": false
+        }
+      ],
+      "metrics": {
+        "precision@1": 1.0,
+        "recall@1": 1.0,
+        "hit_rate@1": 1.0,
+        "precision@3": 0.3333333333333333,
+        "recall@3": 1.0,
+        "hit_rate@3": 1.0,
+        "precision@5": 0.2,
+        "recall@5": 1.0,
+        "hit_rate@5": 1.0,
+        "mrr": 1.0
+      }
+    }
+  ]
+}

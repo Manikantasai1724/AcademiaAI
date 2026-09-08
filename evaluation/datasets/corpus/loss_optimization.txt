@@ -1,0 +1,7 @@
+Optimization in Deep Learning: Stochastic Gradient Descent (SGD).
+
+The computational process of Stochastic Gradient Descent consists of three fundamental steps:
+First, perform a forward pass through the network to compute the loss between predicted outputs and ground truth.
+Second, execute a backward pass using backpropagation to compute the gradient of the loss with respect to all parameters.
+Third, update the weights by subtracting the product of the learning rate and the computed gradient.
+Mini-batch SGD balances variance and computational efficiency by computing gradients over subsets of training examples.

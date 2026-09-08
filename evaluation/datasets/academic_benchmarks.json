@@ -1,0 +1,56 @@
+[
+  {
+    "id": "q01",
+    "type": "definition",
+    "question": "What is backpropagation in deep learning?",
+    "target_doc": "deep_learning.pdf",
+    "target_page": 1,
+    "keywords": ["backpropagation", "gradient", "chain rule", "loss function"],
+    "expected_answer": "Backpropagation is an algorithm that computes gradients of the loss function with respect to model weights using the calculus chain rule."
+  },
+  {
+    "id": "q02",
+    "type": "factual",
+    "question": "Who introduced the Transformer architecture in 2017?",
+    "target_doc": "transformer_nlp.docx",
+    "target_page": 1,
+    "keywords": ["Attention Is All You Need", "Vaswani", "Transformer", "2017"],
+    "expected_answer": "Vaswani et al. introduced the Transformer architecture in the 2017 paper 'Attention Is All You Need'."
+  },
+  {
+    "id": "q03",
+    "type": "explanation",
+    "question": "Why does self-attention scale dot products by the square root of the key dimension?",
+    "target_doc": "transformer_nlp.docx",
+    "target_page": 2,
+    "keywords": ["scale", "sqrt", "variance", "softmax", "vanishing gradients"],
+    "expected_answer": "Scaling by sqrt(d_k) prevents large dot products from pushing the softmax function into regions with extremely small gradients."
+  },
+  {
+    "id": "q04",
+    "type": "comparison",
+    "question": "How does dense semantic retrieval differ from sparse keyword search?",
+    "target_doc": "information_retrieval.pptx",
+    "target_page": 1,
+    "keywords": ["dense", "sparse", "semantic", "BM25", "embeddings", "vocabulary mismatch"],
+    "expected_answer": "Dense retrieval uses continuous neural embeddings to capture semantic intent, overcoming vocabulary mismatch, whereas sparse search relies on exact token matching (TF-IDF/BM25)."
+  },
+  {
+    "id": "q05",
+    "type": "process",
+    "question": "What are the computational steps involved in Stochastic Gradient Descent weight updates?",
+    "target_doc": "loss_optimization.txt",
+    "target_page": 1,
+    "keywords": ["forward pass", "loss computation", "backward pass", "learning rate", "weight update"],
+    "expected_answer": "SGD computes the loss on a mini-batch, calculates gradients via backpropagation, and updates weights by subtracting the product of learning rate and gradient."
+  },
+  {
+    "id": "q06",
+    "type": "conceptual",
+    "question": "Why is cosine similarity equivalent to the dot product for L2-normalized vectors?",
+    "target_doc": "information_retrieval.pptx",
+    "target_page": 2,
+    "keywords": ["cosine similarity", "dot product", "L2 norm", "unit length", "Euclidean"],
+    "expected_answer": "Cosine similarity is the dot product divided by the product of vector magnitudes. When vectors are L2-normalized to unit magnitude (norm = 1.0), the denominator is 1.0, making the dot product identical to cosine similarity."
+  }
+]
