@@ -28,13 +28,13 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onUploadSuccess 
     try {
       const res = await uploadDocument(file);
       setMessage({
-        text: `Indexed "${res.filename}" (${res.chunks_created} chunks, ${res.total_pages} pages).`,
+        text: `Successfully added "${res.filename}" to your library (${res.total_pages} page${res.total_pages === 1 ? '' : 's'} indexed).`,
         type: 'success',
       });
       onUploadSuccess();
     } catch (err: any) {
       setMessage({
-        text: err.message || 'Failed to upload and index document.',
+        text: err.message || 'Failed to upload and process document.',
         type: 'error',
       });
     } finally {
@@ -63,12 +63,12 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onUploadSuccess 
   };
 
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
-      <h2 className="text-base font-bold text-slate-900 mb-1">
+    <div className="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs transition-colors duration-200">
+      <h2 className="text-base font-bold text-slate-900 dark:text-white mb-1">
         Upload Academic Materials
       </h2>
-      <p className="text-xs text-slate-500 mb-4">
-        Supports PDF research papers, DOCX lecture notes, PPTX seminar slides, and TXT outlines.
+      <p className="text-xs text-slate-500 dark:text-slate-400 mb-4">
+        Supports research papers (PDF), lecture documents (DOCX), seminar slides (PPTX), and text notes (TXT).
       </p>
 
       {/* Drag & Drop Zone */}
@@ -79,8 +79,8 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onUploadSuccess 
         onClick={() => fileInputRef.current?.click()}
         className={`border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all ${
           isDragging
-            ? 'border-indigo-500 bg-indigo-50/50'
-            : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50/50'
+            ? 'border-indigo-500 bg-indigo-50/50 dark:bg-indigo-950/20'
+            : 'border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-500/60 hover:bg-slate-50/50 dark:hover:bg-slate-800/40'
         }`}
       >
         <input
@@ -97,31 +97,31 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onUploadSuccess 
 
         <div className="flex flex-col items-center justify-center space-y-2">
           {isUploading ? (
-            <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
+            <Loader2 className="w-8 h-8 text-indigo-600 dark:text-indigo-400 animate-spin" />
           ) : (
-            <div className="w-12 h-12 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
               <UploadCloud className="w-6 h-6" />
             </div>
           )}
 
           <div>
-            <span className="text-xs font-semibold text-indigo-600 hover:underline">
-              Click to choose file
+            <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">
+              Click to choose a file
             </span>
-            <span className="text-xs text-slate-500"> or drag and drop here</span>
+            <span className="text-xs text-slate-500 dark:text-slate-400"> or drag and drop here</span>
           </div>
 
           <div className="flex items-center space-x-2 pt-1">
-            <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-mono text-[10px] uppercase">
+            <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono text-[10px] uppercase">
               PDF
             </span>
-            <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-mono text-[10px] uppercase">
+            <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono text-[10px] uppercase">
               DOCX
             </span>
-            <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-mono text-[10px] uppercase">
+            <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono text-[10px] uppercase">
               PPTX
             </span>
-            <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-mono text-[10px] uppercase">
+            <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 font-mono text-[10px] uppercase">
               TXT
             </span>
           </div>
@@ -133,14 +133,14 @@ export const DocumentUpload: React.FC<DocumentUploadProps> = ({ onUploadSuccess 
         <div
           className={`mt-4 p-3 rounded-xl flex items-center space-x-2.5 text-xs ${
             message.type === 'success'
-              ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
-              : 'bg-rose-50 text-rose-800 border border-rose-200'
+              ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800/60'
+              : 'bg-rose-50 dark:bg-rose-950/40 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800/60'
           }`}
         >
           {message.type === 'success' ? (
-            <FileCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+            <FileCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400 shrink-0" />
           ) : (
-            <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
+            <AlertCircle className="w-4 h-4 text-rose-600 dark:text-rose-400 shrink-0" />
           )}
           <span>{message.text}</span>
         </div>

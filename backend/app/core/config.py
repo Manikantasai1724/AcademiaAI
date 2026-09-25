@@ -13,7 +13,7 @@ class Settings(BaseSettings):
     """Central configuration class for the NLP QA & Semantic Search system."""
 
     # Application details
-    PROJECT_NAME: str = "Academic NLP QA & Semantic Search"
+    PROJECT_NAME: str = "AcademiaAI"
     VERSION: str = "1.0.0"
     ENVIRONMENT: str = "development"
     DEBUG: bool = True
@@ -22,7 +22,7 @@ class Settings(BaseSettings):
 
     # API Keys & Generation Settings (Gemini)
     GEMINI_API_KEY: Optional[str] = None
-    GEMINI_MODEL_NAME: str = "gemini-1.5-flash"
+    GEMINI_MODEL_NAME: str = "gemini-3.8-flash"
 
     # Dense Embedding Model Configuration (Sentence Transformers)
     # Default model: sentence-transformers/all-mpnet-base-v2

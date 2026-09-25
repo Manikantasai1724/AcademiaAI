@@ -1,7 +1,7 @@
-"""FastAPI Main Application Entry Point.
+"""FastAPI Main Application Entry Point for AcademiaAI.
 
 Provides application initialization, middleware configuration, and core
-health check endpoints for the Academic NLP Semantic Search & QA System.
+health check endpoints for the AcademiaAI Academic NLP Semantic Search & QA System.
 """
 
 from fastapi import FastAPI
@@ -12,7 +12,7 @@ from backend.app.core.config import settings
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.VERSION,
-    description="Academic Natural Language Processing (NLP) Semantic Search & Grounded QA System.",
+    description="AcademiaAI — Intelligent Academic Document Analysis & Grounded QA System.",
     debug=settings.DEBUG,
 )
 
