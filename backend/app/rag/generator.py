@@ -101,7 +101,7 @@ class RAGService:
         )
 
     def _generate_with_gemini(self, prompt: str, results: List[SearchResult]) -> str:
-        """Call Gemini API, falling back gracefully if API key is not configured."""
+        """Call Gemini API, falling back across models or to top passage if quota is exhausted."""
         if not self._gemini_initialized and not self._init_gemini():
             # Graceful educational fallback when running offline or without API key
             top_chunk = results[0].chunk
@@ -112,15 +112,34 @@ class RAGService:
                 f"please set your GEMINI_API_KEY in the .env file)."
             )
 
-        try:
-            model = genai.GenerativeModel(settings.GEMINI_MODEL_NAME)
-            response = model.generate_content(prompt)
-            return response.text.strip()
-        except Exception as e:
-            logger.warning("Gemini generation call failed, falling back to top passage: %s", e)
-            top_chunk = results[0].chunk
-            return (
-                f"Based on {top_chunk.filename} (Page {top_chunk.page_number}):\n\n"
-                f"{top_chunk.text}\n\n"
-                f"[LLM generation notice: {str(e)}]"
-            )
+        candidate_models = [
+            settings.GEMINI_MODEL_NAME,
+            "gemini-3.5-flash",
+            "gemini-3-flash-preview",
+            "gemini-3.1-flash-lite",
+        ]
+        # Deduplicate while preserving order
+        candidate_models = list(dict.fromkeys(candidate_models))
+
+        last_error = None
+        for model_name in candidate_models:
+            try:
+                model = genai.GenerativeModel(model_name)
+                response = model.generate_content(prompt)
+                if response and response.text:
+                    return response.text.strip()
+            except Exception as e:
+                last_error = e
+                logger.warning(
+                    "Gemini generation call failed on model %s (%s). Attempting fallback...",
+                    model_name,
+                    e,
+                )
+
+        logger.error("All Gemini candidate models failed, falling back to top passage: %s", last_error)
+        top_chunk = results[0].chunk
+        return (
+            f"Based on {top_chunk.filename} (Page {top_chunk.page_number}):\n\n"
+            f"{top_chunk.text}\n\n"
+            f"[LLM generation notice: {str(last_error)}]"
+        )

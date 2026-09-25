@@ -22,7 +22,7 @@ class Settings(BaseSettings):
 
     # API Keys & Generation Settings (Gemini)
     GEMINI_API_KEY: Optional[str] = None
-    GEMINI_MODEL_NAME: str = "gemini-3.8-flash"
+    GEMINI_MODEL_NAME: str = "gemini-3.5-flash"
 
     # Dense Embedding Model Configuration (Sentence Transformers)
     # Default model: sentence-transformers/all-mpnet-base-v2
