@@ -168,6 +168,19 @@ NLP/
 
 ---
 
+## 🐳 Production Deployment
+
+AcademiaAI includes turnkey Docker configurations for containerized deployment:
+
+```bash
+# Launch both backend and frontend with persistent vector volume
+docker compose up -d --build
+```
+
+For complete step-by-step instructions for **Vercel**, **Hugging Face Spaces (Free 16GB RAM)**, **Render**, and **VPS**, see the **[Full Deployment Guide](docs/deployment.md)**.
+
+---
+
 ## 📡 REST API Reference
 
 | Method | Endpoint | Description |
