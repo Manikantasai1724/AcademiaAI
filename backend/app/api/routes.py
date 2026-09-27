@@ -1,10 +1,13 @@
 """REST API Endpoints for Academic NLP QA and Semantic Search System."""
 
+import logging
 import shutil
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from fastapi import APIRouter, Depends, File, HTTPException, Query, UploadFile, status
 from pydantic import BaseModel, Field
+
+logger = logging.getLogger(__name__)
 
 from backend.app.api.dependencies import (
     get_chunker,
@@ -212,3 +215,53 @@ async def clear_index(
     if settings.metadata_store_path.exists():
         settings.metadata_store_path.unlink()
     return {"message": "Vector index and metadata store have been cleared successfully."}
+
+
+@router.post(
+    "/documents/reindex",
+    summary="Re-index all uploaded documents using the configured embedding model",
+)
+async def reindex_documents(
+    vector_store: FAISSVectorStore = Depends(get_vector_store),
+    embedding_manager: EmbeddingManager = Depends(get_embedding_manager),
+    chunker: IntelligentChunker = Depends(get_chunker),
+):
+    """Purge existing index and rebuild all embeddings for files in data/uploads."""
+    vector_store.clear()
+    if settings.faiss_index_path.exists():
+        settings.faiss_index_path.unlink()
+    if settings.metadata_store_path.exists():
+        settings.metadata_store_path.unlink()
+
+    upload_files = [
+        f for f in settings.DOCUMENTS_UPLOAD_DIR.iterdir()
+        if f.is_file() and f.suffix.lower().lstrip(".") in {"pdf", "docx", "pptx", "txt"}
+    ]
+
+    total_chunks = 0
+    indexed_files = []
+
+    for file_path in upload_files:
+        try:
+            doc = DocumentIngestionService.extract_document(
+                file_path=file_path,
+                original_filename=file_path.name,
+            )
+            chunks = chunker.chunk_document(doc)
+            if chunks:
+                texts = [c.text for c in chunks]
+                embeddings = embedding_manager.encode_texts(texts)
+                vector_store.add_chunks(chunks=chunks, embeddings=embeddings)
+                total_chunks += len(chunks)
+                indexed_files.append({"filename": file_path.name, "chunks": len(chunks)})
+        except Exception as e:
+            logger.error("Failed to reindex %s: %s", file_path.name, e)
+
+    vector_store.save()
+
+    return {
+        "message": f"Successfully re-indexed {len(indexed_files)} documents ({total_chunks} total chunks) using {settings.EMBEDDING_MODEL_NAME}.",
+        "embedding_model": settings.EMBEDDING_MODEL_NAME,
+        "indexed_files": indexed_files,
+        "total_chunks": total_chunks,
+    }

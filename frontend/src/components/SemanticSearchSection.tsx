@@ -19,7 +19,7 @@ export const SemanticSearchSection: React.FC<SemanticSearchSectionProps> = ({
 
   const handleSearch = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
-    if (!query.trim()) return;
+    if (!query.trim() || isLoading) return;
 
     setIsLoading(true);
     setError(null);

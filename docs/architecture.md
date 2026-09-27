@@ -20,8 +20,8 @@ The system is designed as an academic-grade Natural Language Processing (NLP) pi
                                         v
 +-------------------------------------------------------------------------------+
 |                            EMBEDDINGS & VECTOR STORE                          |
-|  Dense Bi-Encoder (all-mpnet-base-v2) ---> 768-d Vectors ---> FAISS Index     |
-|                                                          ---> Metadata JSON   |
+|  Dense Bi-Encoder (BAAI/bge-base-en-v1.5) ---> 768-d Vectors ---> FAISS Index |
+|                                                              ---> Metadata    |
 +-------------------------------------------------------------------------------+
                                         |
                                         v
@@ -34,7 +34,8 @@ The system is designed as an academic-grade Natural Language Processing (NLP) pi
                                         v
 +-------------------------------------------------------------------------------+
 |                          RAG GENERATION & CITATIONS                           |
-|  Strict Academic Grounding Prompt + Chunks + Conversation History ---> Gemini |
+|  In-Memory LRU ResponseCache (Repeated Queries)                               |
+|  Grounding Prompt + Chunks + Conversation History ---> Gemini 3.8 Flash / Groq|
 |  Synthesized Answer + Exact Metadata Citations (Document, Page, Chunk)        |
 +-------------------------------------------------------------------------------+
 ```
@@ -47,7 +48,7 @@ $$m(c_i) = \langle \text{doc\_id}, \text{filename}, \text{page\_num}, \text{sect
 ### 2.1 Embedding Transformation
 Each text chunk $c_i$ is mapped into a dense representation via the Sentence Transformer embedding function $f_\theta: \mathcal{T} \to \mathbb{R}^d$:
 $$\mathbf{v}_i = \frac{f_\theta(c_i)}{\|f_\theta(c_i)\|_2}$$
-Where $d = 768$ for `sentence-transformers/all-mpnet-base-v2`. Vectors are $L_2$-normalized such that Euclidean inner product directly equals cosine similarity:
+Where $d = 768$ for `BAAI/bge-base-en-v1.5` (and legacy `all-mpnet-base-v2`). Vectors are $L_2$-normalized such that Euclidean inner product directly equals cosine similarity:
 $$\cos(\mathbf{q}, \mathbf{v}_i) = \mathbf{q} \cdot \mathbf{v}_i$$
 
 ### 2.2 Nearest Neighbor Retrieval (FAISS)

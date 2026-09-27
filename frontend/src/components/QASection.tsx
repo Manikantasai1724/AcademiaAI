@@ -43,7 +43,7 @@ export const QASection: React.FC<QASectionProps> = ({ onInspectChunk }) => {
 
   const handleSubmit = async (qText?: string) => {
     const query = qText || question;
-    if (!query.trim()) return;
+    if (!query.trim() || isLoading) return;
 
     setIsLoading(true);
     setError(null);
@@ -175,11 +175,16 @@ export const QASection: React.FC<QASectionProps> = ({ onInspectChunk }) => {
                   <button
                     key={idx}
                     type="button"
+                    disabled={isLoading}
                     onClick={() => {
                       setQuestion(sug.query);
                       handleSubmit(sug.query);
                     }}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400 text-xs font-medium transition-all border border-slate-200/60 dark:border-slate-700/60 cursor-pointer active:scale-95"
+                    className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all border ${
+                      isLoading
+                        ? 'opacity-40 cursor-not-allowed bg-slate-100 dark:bg-slate-800 text-slate-400 border-slate-200 dark:border-slate-700'
+                        : 'bg-slate-100/90 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 hover:text-indigo-600 dark:hover:text-indigo-400 border-slate-200/60 dark:border-slate-700/60 cursor-pointer active:scale-95'
+                    }`}
                   >
                     <IconComponent className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
                     <span>{sug.label}</span>

@@ -20,14 +20,15 @@ class Settings(BaseSettings):
     HOST: str = "127.0.0.1"
     PORT: int = 8000
 
-    # API Keys & Generation Settings (Gemini)
+    # API Keys & Generation Settings (Gemini & Groq Fallback)
     GEMINI_API_KEY: Optional[str] = None
-    GEMINI_MODEL_NAME: str = "gemini-3.5-flash"
+    GEMINI_MODEL_NAME: str = "gemini-3.8-flash"
+    GROQ_API_KEY: Optional[str] = None
 
     # Dense Embedding Model Configuration (Sentence Transformers)
-    # Default model: sentence-transformers/all-mpnet-base-v2
+    # Default model: BAAI/bge-base-en-v1.5 (Top-tier MTEB retrieval performance)
     # Yields 768-dimensional L2-normalized embeddings
-    EMBEDDING_MODEL_NAME: str = "sentence-transformers/all-mpnet-base-v2"
+    EMBEDDING_MODEL_NAME: str = "BAAI/bge-base-en-v1.5"
 
     # Storage & Persistence Directories
     DATA_DIR: Path = Path("data")

@@ -5,9 +5,10 @@
 [![Vite](https://img.shields.io/badge/Bundler-Vite-646CFF.svg?style=flat&logo=vite)](https://vitejs.dev)
 [![Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind%20v4-38B2AC.svg?style=flat&logo=tailwind-css)](https://tailwindcss.com)
 [![FAISS](https://img.shields.io/badge/Vector%20Store-FAISS%20IndexFlatIP-blue.svg?style=flat)](https://github.com/facebookresearch/faiss)
-[![SentenceTransformers](https://img.shields.io/badge/Embeddings-all--mpnet--base--v2-orange.svg?style=flat)](https://huggingface.co/sentence-transformers/all-mpnet-base-v2)
+[![SentenceTransformers](https://img.shields.io/badge/Embeddings-BAAI%2Fbge--base--en--v1.5-orange.svg?style=flat)](https://huggingface.co/BAAI/bge-base-en-v1.5)
+[![Gemini](https://img.shields.io/badge/LLM-Gemini%203.8%20Flash-4285F4.svg?style=flat&logo=google)](https://ai.google.dev/)
 
-**AcademiaAI** is a student- and researcher-focused Question Answering and Semantic Literature Search platform. It combines dense semantic vector retrieval (`all-mpnet-base-v2` + FAISS) with Retrieval-Augmented Generation (RAG) powered by Google Gemini to provide **verifiable, hallucination-free answers with exact page, slide, and paragraph citations**.
+**AcademiaAI** is a student- and researcher-focused Question Answering and Semantic Literature Search platform. It combines dense semantic vector retrieval (`BAAI/bge-base-en-v1.5` + FAISS) with Retrieval-Augmented Generation (RAG) powered by Google Gemini (`gemini-3.8-flash` with optional Groq fallback) to provide **verifiable, hallucination-free answers with exact page, slide, and paragraph citations**.
 
 ---
 
@@ -128,8 +129,9 @@ NLP/
    Add your Gemini API Key in `.env`:
    ```env
    GEMINI_API_KEY="your-google-gemini-api-key"
-   GEMINI_MODEL="gemini-2.5-flash"
-   EMBEDDING_MODEL="sentence-transformers/all-mpnet-base-v2"
+   GEMINI_MODEL_NAME="gemini-3.8-flash"
+   GROQ_API_KEY=""
+   EMBEDDING_MODEL_NAME="BAAI/bge-base-en-v1.5"
    ```
 
 ---
@@ -171,25 +173,27 @@ NLP/
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
 | `POST` | `/api/documents/upload` | Uploads and indexes a `.pdf`, `.docx`, `.pptx`, or `.txt` file into FAISS. |
+| `POST` | `/api/documents/reindex` | Purges and re-indexes all files in `data/uploads` using the active embedding model. |
 | `GET` | `/api/documents` | Lists all indexed documents, chunk counts, and global corpus statistics. |
 | `POST` | `/api/qa` | Submits a question with optional conversation history, returning a grounded answer and citations. |
 | `POST` | `/api/search` | Performs dense semantic search returning top-k passages ranked by similarity. |
-| `GET` | `/api/chunks/{document_id}` | Retrieves all extracted text passages and metadata for a specific document. |
-| `DELETE`| `/api/index/clear` | Clears all documents and resets the in-memory/on-disk FAISS index. |
+| `GET` | `/api/chunks` | Retrieves all extracted text passages and metadata for inspection. |
+| `DELETE`| `/api/index` | Clears all documents and resets the in-memory/on-disk FAISS index. |
 | `GET` | `/api/health` | Health check endpoint confirming vector store and embedding engine readiness. |
 
 ---
 
 ## 🔬 Core Technologies & Models
 
-* **Embedding Model**: `sentence-transformers/all-mpnet-base-v2`  
-  * 768-dimensional dense representations.
-  * State-of-the-art sentence transformer tuned for semantic similarity and semantic retrieval tasks.
+* **Embedding Model**: `BAAI/bge-base-en-v1.5` (768 dimensions)  
+  * State-of-the-art MTEB retrieval performance specifically tuned for asymmetric query-to-passage search.
+  * Supports standalone CLI re-indexing via `python reindex.py`.
 * **Vector Index**: FAISS (`IndexFlatIP`)  
   * Exact inner product search on L2-normalized vectors (equivalent to cosine similarity).
-* **Generation Engine**: Google Gemini (`gemini-2.5-flash` / `gemini-3.8-flash`)  
-  * Strict system grounding prompts prohibiting speculative extrapolation.
-* **Frontend**: React 18, TypeScript, Tailwind CSS v4, Lucide Icons, Vite.
+* **Generation Engine**: Google Gemini (`gemini-3.8-flash` / `gemini-3.5-flash-lite`)  
+  * In-memory LRU `ResponseCache` for instant responses to repeated queries with 0 latency and 0 quota usage.
+  * Exponential backoff retry on HTTP 429 rate limits, with optional secondary fallback to Groq (`llama-3.3-70b-versatile`).
+* **Frontend**: React 18, TypeScript, Tailwind CSS v4, Lucide Icons, Vite (with multi-click debouncing).
 
 ---
 
