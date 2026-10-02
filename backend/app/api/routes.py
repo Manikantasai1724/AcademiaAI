@@ -79,6 +79,12 @@ async def upload_document(
             original_filename=filename,
         )
 
+        if extracted_doc.total_pages > 50:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"Document exceeds the 50-page limit for cloud processing ({extracted_doc.total_pages} pages detected). Please upload an excerpt or smaller document.",
+            )
+
         # 2. Text Cleaning & Intelligent Chunking (Phase 3)
         chunks: List[DocumentChunk] = chunker.chunk_document(extracted_doc)
         if not chunks:
@@ -87,13 +93,22 @@ async def upload_document(
                 detail="No readable text content could be extracted from this document.",
             )
 
+        # Cloud free-tier safeguard: cap indexing at 150 passages per file to avoid 512MB OOM and timeouts
+        original_chunk_count = len(chunks)
+        if len(chunks) > 150:
+            chunks = chunks[:150]
+
         # 3. Dense Vector Embeddings (Phase 4)
         texts = [chunk.text for chunk in chunks]
-        embeddings = embedding_manager.encode_texts(texts)
+        embeddings = embedding_manager.encode_texts(texts, batch_size=4)
 
         # 4. FAISS Vector Indexing & Persistence (Phase 5)
         vector_store.add_chunks(chunks=chunks, embeddings=embeddings)
         vector_store.save()
+
+        msg = f"Successfully indexed {len(chunks)} chunks across {extracted_doc.total_pages} pages/slides."
+        if original_chunk_count > 150:
+            msg += f" (Indexed first 150 of {original_chunk_count} passages to fit cloud limits)"
 
         return DocumentUploadResponse(
             document_id=extracted_doc.document_id,
@@ -101,9 +116,11 @@ async def upload_document(
             file_type=extracted_doc.file_type,
             total_pages=extracted_doc.total_pages,
             chunks_created=len(chunks),
-            message=f"Successfully indexed {len(chunks)} chunks across {extracted_doc.total_pages} pages/slides.",
+            message=msg,
         )
 
+    except HTTPException:
+        raise
     except ValueError as ve:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
     except Exception as e:

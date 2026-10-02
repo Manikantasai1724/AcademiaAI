@@ -4,11 +4,19 @@ Loads dense bi-encoder models and produces L2-normalized embedding vectors
 for document chunks and user queries.
 """
 
+import gc
 from typing import List, Optional
 import numpy as np
+import torch
 from sentence_transformers import SentenceTransformer
 
 from backend.app.core.config import settings
+
+# Force single-threaded CPU operations to avoid RAM spikes on low-tier cloud instances
+try:
+    torch.set_num_threads(1)
+except Exception:
+    pass
 
 
 class EmbeddingManager:
@@ -41,7 +49,7 @@ class EmbeddingManager:
 
     @property
     def dimension(self) -> int:
-        """Return the vector dimensionality (e.g. 768 for all-mpnet-base-v2)."""
+        """Return the vector dimensionality (e.g. 384 for bge-small, 768 for bge-base)."""
         if hasattr(self.model, "get_embedding_dimension"):
             return self.model.get_embedding_dimension()
         return self.model.get_sentence_embedding_dimension()
@@ -52,26 +60,31 @@ class EmbeddingManager:
             # Return zero vector if empty
             return np.zeros(self.dimension, dtype=np.float32)
 
-        embedding = self.model.encode(
-            text,
-            convert_to_numpy=True,
-            normalize_embeddings=True,
-            show_progress_bar=False,
-        )
+        with torch.inference_mode():
+            embedding = self.model.encode(
+                text,
+                convert_to_numpy=True,
+                normalize_embeddings=True,
+                show_progress_bar=False,
+            )
         return np.asarray(embedding, dtype=np.float32)
 
-    def encode_texts(self, texts: List[str], batch_size: int = 32) -> np.ndarray:
-        """Batch encode a list of texts into a 2D float32 numpy array of shape (N, d)."""
+    def encode_texts(self, texts: List[str], batch_size: int = 4) -> np.ndarray:
+        """Batch encode a list of texts using micro-batches (batch_size=4) to prevent 512MB RAM OOM crashes."""
         if not texts:
             return np.empty((0, self.dimension), dtype=np.float32)
 
-        embeddings = self.model.encode(
-            texts,
-            batch_size=batch_size,
-            convert_to_numpy=True,
-            normalize_embeddings=True,
-            show_progress_bar=len(texts) > 50,
-        )
+        # Micro-batching (batch_size <= 8) prevents PyTorch intermediate activation buffers from exceeding 512MB RAM
+        safe_batch = max(1, min(batch_size, 8))
+        with torch.inference_mode():
+            embeddings = self.model.encode(
+                texts,
+                batch_size=safe_batch,
+                convert_to_numpy=True,
+                normalize_embeddings=True,
+                show_progress_bar=False,
+            )
+        gc.collect()
         return np.asarray(embeddings, dtype=np.float32)
 
     @classmethod
