@@ -6,7 +6,7 @@ import { SemanticSearchSection } from './components/SemanticSearchSection';
 import { DocumentLibrary } from './components/DocumentLibrary';
 import { ChunkInspectorModal } from './components/ChunkInspectorModal';
 import type { CorpusStats, DocumentChunk, DocumentInfo } from './types';
-import { listDocuments } from './services/api';
+import { listDocuments, API_BASE_URL, API_DOCS_URL } from './services/api';
 import {
   Sparkles,
   Upload,
@@ -26,6 +26,7 @@ export function App() {
   const [documents, setDocuments] = useState<DocumentInfo[]>([]);
   const [corpusStats, setCorpusStats] = useState<CorpusStats | null>(null);
   const [inspectedChunk, setInspectedChunk] = useState<DocumentChunk | null>(null);
+  const [backendStatus, setBackendStatus] = useState<'checking' | 'connected' | 'waking'>('checking');
 
   // Theme state: dark / light
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
@@ -49,19 +50,32 @@ export function App() {
     setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
-  const fetchCorpus = async () => {
+  const fetchCorpus = async (silent = false) => {
     try {
       const res = await listDocuments();
       setDocuments(res.documents);
       setCorpusStats(res.corpus_stats);
+      setBackendStatus('connected');
     } catch (err) {
-      console.warn('Backend not yet reachable on http://127.0.0.1:8000:', err);
+      setBackendStatus('waking');
+      if (!silent) {
+        console.warn(`Backend not yet reachable on ${API_BASE_URL}:`, err);
+      }
     }
   };
 
   useEffect(() => {
     fetchCorpus();
   }, []);
+
+  // Auto-retry polling every 6 seconds if backend is waking up (Render free tier spin-up)
+  useEffect(() => {
+    if (backendStatus !== 'waking') return;
+    const interval = setInterval(() => {
+      fetchCorpus(true);
+    }, 6000);
+    return () => clearInterval(interval);
+  }, [backendStatus]);
 
   return (
     <div className="min-h-screen bg-[#faf8ff] dark:bg-slate-950 text-slate-900 dark:text-slate-100 flex flex-col font-sans transition-colors duration-200">
@@ -74,6 +88,16 @@ export function App() {
         toggleTheme={toggleTheme}
         onUploadClick={() => setActiveTab('upload')}
       />
+
+      {/* Render Cold-Start Notice Banner */}
+      {backendStatus === 'waking' && (
+        <div className="bg-amber-500/10 dark:bg-amber-950/40 border-b border-amber-300 dark:border-amber-800 text-amber-800 dark:text-amber-200 px-4 py-2 text-xs font-medium text-center flex items-center justify-center gap-2 transition-all">
+          <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping inline-block" />
+          <span>
+            Connecting to cloud backend... (Render free tier spins down on inactivity; cold start takes ~30–45s). Reconnecting automatically.
+          </span>
+        </div>
+      )}
 
       {/* Hero / Overview Banner */}
       <section className="relative pt-8 pb-6 overflow-hidden hero-glow">
@@ -278,7 +302,7 @@ export function App() {
 
           <div className="flex items-center space-x-6 text-xs text-slate-500 dark:text-slate-400">
             <a
-              href="http://127.0.0.1:8000/docs"
+              href={API_DOCS_URL}
               target="_blank"
               rel="noreferrer"
               className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors inline-flex items-center gap-1"
@@ -286,10 +310,17 @@ export function App() {
               <span>API Docs</span>
               <ArrowUpRight className="w-3 h-3" />
             </a>
-            <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
-              <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
-              <span>System Operational</span>
-            </div>
+            {backendStatus === 'connected' ? (
+              <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400 font-semibold">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                <span>Cloud Connected</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 text-amber-600 dark:text-amber-400 font-semibold">
+                <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                <span>Connecting / Waking...</span>
+              </div>
+            )}
             <span className="text-[11px] text-slate-400">
               &copy; {new Date().getFullYear()} AcademiaAI
             </span>
